@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Similitud con LCS</title>
+</head>
+
+<body>
+    <h1>Sube dos archivos para encontrar la subcadena común más larga (LCS)</h1>
+    <form action="/procesar" method="POST" enctype="multipart/form-data">
+        <label for="archivo1">Archivo 1 (.txt):</label>
+        <input type="file" name="archivo1" id="archivo1" required><br><br>
+
+        <label for="archivo2">Archivo 2 (.txt):</label>
+        <input type="file" name="archivo2" id="archivo2" required><br><br>
+
+        <input type="submit" value="Procesar">
+    </form>
+</body>
+
+</html>

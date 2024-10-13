@@ -1,3 +1,8 @@
+from flask import Flask, render_template, request
+import os
+
+app = Flask(__name__)
+
 def lcs(T1, T2):
     n = len(T1)
     m = len(T2)
@@ -22,7 +27,31 @@ def lcs(T1, T2):
     lcs_str = T1[end_idx - max_len:end_idx]
     return lcs_str
 
-T1 = "abcdfg"
-T2 = "abdfg"
-resultado = lcs(T1, T2)
-print(f"La subcadena común más larga es: {resultado}")
+# Ruta para renderizar el index.html
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+# Ruta para recibir los archivos cargados y ejecutar LCS
+@app.route('/procesar', methods=['POST'])
+def procesar():
+    # Verificar primero si se cargaron dos archivos
+    if 'archivo1' not in request.files or 'archivo2' not in request.files:
+        return "No se cargaron 2 archivos."
+
+    archivo1 = request.files['archivo1']
+    archivo2 = request.files['archivo2']
+
+    # Leer el contenido de los archivos
+    T1 = archivo1.read().decode('utf-8')
+    T2 = archivo2.read().decode('utf-8')
+
+    # Llamar a la funcion LCS
+    resultado_lcs = lcs(T1, T2)
+
+    # Mostrar el resultado
+    return f"La subcadena común más larga es: {resultado_lcs}"
+
+# Ejecutar similitud
+if __name__ == "__main__":
+    app.run(debug=True)
