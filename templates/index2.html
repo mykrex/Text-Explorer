@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auto-completar con Trie</title>
+</head>
+
+<body>
+    <h1>Cargar archivo</h1>
+    <form action="/cargar" method="POST" enctype="multipart/form-data">
+        <input type="file" name="archivo" required>
+        <input type="submit" value="Cargar archivo">
+    </form>
+    
+    <h2>Prueba la función de auto-completar</h2>
+    <input type="text" id="autocompletar" placeholder="Escribe aqui" onkeyup="getSuggestions()">
+    <ul id="suggestions"></ul>
+
+    <script>
+        function getSuggestions() {
+            const query = document.getElementById("autocompletar").value;
+            fetch(`/autocompletar?prefix=${query}`)
+            .then(response => response.json())
+            .then(data => {
+                const suggestionsList = document.getElementById("suggestions");
+                suggestionsList.innerHTML = "";
+                data.forEach(suggestion => {
+                    const li = document.createElement("li");
+                    li.textContent = suggestion;
+                    suggestionsList.appendChild(li);
+                });
+            });
+        }
+    </script>
+</body>
+
+</html>

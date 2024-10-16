@@ -1,3 +1,7 @@
+from flask import Flask, render_template, request, jsonify
+
+app = Flask(__name__)
+
 class TrieNode:
     def __init__(self):
         self.children = {}
@@ -19,7 +23,7 @@ class Trie:
         node = self.root
         for char in prefix:
             if char not in node.children:
-                return []
+                return []  # No se encontraron palabras con este prefijo
             node = node.children[char]
         return self._get_words_from_node(node, prefix)
 
@@ -31,11 +35,34 @@ class Trie:
             words.extend(self._get_words_from_node(child_node, prefix + char))
         return words
 
-# Damos las palabras para crear el trie
+# Instancia del Trie global
 trie = Trie()
-words = ["loco", "loca", "lapiz", "poca", "pozo", "pozos"]
-for word in words:
-    trie.insert(word)
 
-prefix = "lo"
-print(f"Auto-completar para '{prefix}': {trie.search(prefix)}")
+@app.route('/')
+def index():
+    return render_template('index2.html')
+
+@app.route('/cargar', methods=['POST'])
+def cargar_archivo():
+    if 'archivo' not in request.files:
+        return "Sube un archivo."
+
+    archivo = request.files['archivo']
+    # Leer el archivo y procesar las palabras
+    contenido = archivo.read().decode('utf-8')
+    palabras = contenido.split()  # Se divide el texto en palabras, por espacios
+
+    # Se insertan las palabras en el Trie
+    for palabra in palabras:
+        trie.insert(palabra.lower())
+    
+    return "Archivo cargado"
+
+@app.route('/autocompletar', methods=['GET'])
+def autocompletar():
+    prefix = request.args.get('prefix', '').lower()
+    suggestions = trie.search(prefix)
+    return jsonify(suggestions)
+
+if __name__ == "__main__":
+    app.run(debug=True)
