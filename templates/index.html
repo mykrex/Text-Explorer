@@ -4,20 +4,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Similitud con LCS</title>
+    <title>Text Explorer</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+        h1, h2 { color: #333; }
+        form { margin-bottom: 20px; }
+        input[type="file"], input[type="text"] { margin-bottom: 10px; }
+        #suggestions { list-style-type: none; padding: 0; }
+        #suggestions li { cursor: pointer; padding: 5px; }
+        #suggestions li:hover { background-color: #a4dfd5; }
+    </style>
 </head>
 
 <body>
-    <h1>Sube dos archivos para encontrar la subcadena común más larga (LCS)</h1>
-    <form action="/procesar" method="POST" enctype="multipart/form-data">
-        <label for="archivo1">Archivo 1 (.txt):</label>
-        <input type="file" name="archivo1" id="archivo1" required><br><br>
+    <h1>Text Explorer</h1>
 
-        <label for="archivo2">Archivo 2 (.txt):</label>
-        <input type="file" name="archivo2" id="archivo2" required><br><br>
-
-        <input type="submit" value="Procesar">
+    <h2>Similitud - LCS</h2>
+    <form id="lcsForm">
+        <input type="file" name="archivo1" required>
+        <input type="file" name="archivo2" required>
+        <button type="submit">Calcular LCS</button>
     </form>
+    <p id="lcsResult"></p>
+
+    <h2>Cargar archivo para auto-completar</h2>
+    <form id="uploadForm">
+        <input type="file" id="archivo" required>
+        <button type="submit">Cargar archivo</button>
+    </form>
+    <p id="uploadResult"></p>
+    
+    <h2>Auto-completar - Trie</h2>
+    <input type="text" id="autocompletar_input" placeholder="Escribe para auto-completar">
+    <ul id="suggestions"></ul>
+
+    <script>
+        document.getElementById('uploadForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData();
+            formData.append('archivo', document.getElementById('archivo').files[0]);
+            fetch('/cargar', { method: 'POST', body: formData })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('uploadResult').textContent = data.message + ' ' + data.palabras_cargadas + ' palabras cargadas.';
+                });
+        });
+
+        document.getElementById('lcsForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            fetch('/similitud', { method: 'POST', body: formData })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('lcsResult').textContent = `Subcadena común más larga: "${data.subcadena_comun}".`;
+                });
+        });
+
+        document.getElementById('autocompletar_input').addEventListener('input', function() {
+            const query = this.value;
+            fetch(`/autocompletar?prefix=${query}`)
+                .then(response => response.json())
+                .then(data => {
+                    const suggestionsList = document.getElementById('suggestions');
+                    suggestionsList.innerHTML = '';
+                    data.forEach(item => {
+                        const li = document.createElement('li');
+                        li.textContent = `${item.word} (${item.frequency})`;
+                        li.addEventListener('click', function() {
+                            document.getElementById('autocompletar_input').value = item.word;
+                            suggestionsList.innerHTML = '';
+                        });
+                        suggestionsList.appendChild(li);
+                    });
+                });
+        });
+    </script>
 </body>
 
 </html>
