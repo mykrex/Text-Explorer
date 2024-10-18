@@ -3,7 +3,7 @@ import re
 
 app = Flask(__name__)
 
-# FUNCION SIMILITUD (LCS)
+# FUNCION LCS (SIMILITUD)
 def lcs(T1, T2):
     n, m = len(T1), len(T2)
     dp = [[0] * (m+1) for _ in range(n+1)]
@@ -21,7 +21,7 @@ def lcs(T1, T2):
 
     return T1[end_idx - max_len:end_idx]
 
-# FUNCION AUTO - COMPLETAR (TRIE)
+# FUNCION TRIE (AUTO - COMPLETAR)
 class TrieNode:
     def __init__(self):
         self.children = {}
@@ -57,9 +57,10 @@ class Trie:
             words.extend(self._get_words_from_node(child_node, prefix + char))
         return words
 
-# Instancia global del Trie
+# Instancia del Trie
 trie = Trie()
 
+# Se manda al index.html
 @app.route('/')
 def index():
     return render_template('index.html')
