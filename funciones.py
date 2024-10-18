@@ -1,7 +1,8 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, send_from_directory
 import re
+import os
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='templates', static_folder='templates')
 
 # FUNCION LCS (SIMILITUD)
 def lcs(T1, T2):
@@ -65,19 +66,23 @@ trie = Trie()
 def index():
     return render_template('index.html')
 
+@app.route('/<path:path>')
+def serve_static(path):
+    return send_from_directory('templates', path)
+
 @app.route('/similitud', methods=['POST'])
 def similitud():
     if 'archivo1' not in request.files or 'archivo2' not in request.files:
         return jsonify({"error": "Por favor sube ambos archivos."})
-
+    
     archivo1 = request.files['archivo1']
     archivo2 = request.files['archivo2']
-
+    
     T1 = archivo1.read().decode('utf-8')
     T2 = archivo2.read().decode('utf-8')
-
+    
     resultado_lcs = lcs(T1, T2)
-
+    
     return jsonify({
         "subcadena_comun": resultado_lcs
     })

@@ -5,80 +5,36 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Text Explorer</title>
-    <style>
-        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
-        h1, h2 { color: #333; }
-        form { margin-bottom: 20px; }
-        input[type="file"], input[type="text"] { margin-bottom: 10px; }
-        #suggestions { list-style-type: none; padding: 0; }
-        #suggestions li { cursor: pointer; padding: 5px; }
-        #suggestions li:hover { background-color: #a4dfd5; }
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
     <h1>Text Explorer</h1>
 
-    <h2>Similitud - LCS</h2>
-    <form id="lcsForm">
-        <input type="file" name="archivo1" required>
-        <input type="file" name="archivo2" required>
-        <button type="submit">Calcular LCS</button>
-    </form>
-    <p id="lcsResult"></p>
-
-    <h2>Cargar archivo para auto-completar</h2>
-    <form id="uploadForm">
-        <input type="file" id="archivo" required>
-        <button type="submit">Cargar archivo</button>
-    </form>
-    <p id="uploadResult"></p>
+    <div class="input-section">
+        <h2>Cargar archivos</h2>
+        <input type="file" id="fileInput" multiple>
+        <button id="loadButton" disabled>Cargar</button>
+    </div>
     
-    <h2>Auto-completar - Trie</h2>
-    <input type="text" id="autocompletar_input" placeholder="Escribe para auto-completar">
-    <ul id="suggestions"></ul>
+    <div class="file-content-container">
+        <div id="fileContent1" class="file-content"></div>
+        <div id="fileContent2" class="file-content"></div>
+    </div>
 
-    <script>
-        document.getElementById('uploadForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const formData = new FormData();
-            formData.append('archivo', document.getElementById('archivo').files[0]);
-            fetch('/cargar', { method: 'POST', body: formData })
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById('uploadResult').textContent = data.message + ' ' + data.palabras_cargadas + ' palabras cargadas.';
-                });
-        });
+    <div class="input-section">
+        <h2>Similitud - LCS</h2>
+        <button id="similarityButton" disabled>Calcular similitud</button>
+        <p id="lcsResult"></p>
+    </div>
 
-        document.getElementById('lcsForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const formData = new FormData(this);
-            fetch('/similitud', { method: 'POST', body: formData })
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById('lcsResult').textContent = `Subcadena común más larga: "${data.subcadena_comun}".`;
-                });
-        });
+    <div class="input-section">
+        <h2>Auto-completar - Trie</h2>
+        <input type="text" id="autocompletar_input" placeholder="Escribe para auto-completar">
+        <ul id="suggestions"></ul>
+    </div>
 
-        document.getElementById('autocompletar_input').addEventListener('input', function() {
-            const query = this.value;
-            fetch(`/autocompletar?prefix=${query}`)
-                .then(response => response.json())
-                .then(data => {
-                    const suggestionsList = document.getElementById('suggestions');
-                    suggestionsList.innerHTML = '';
-                    data.forEach(item => {
-                        const li = document.createElement('li');
-                        li.textContent = `${item.word} (${item.frequency})`;
-                        li.addEventListener('click', function() {
-                            document.getElementById('autocompletar_input').value = item.word;
-                            suggestionsList.innerHTML = '';
-                        });
-                        suggestionsList.appendChild(li);
-                    });
-                });
-        });
-    </script>
+    <script src="script.js"></script>
 </body>
 
 </html>
