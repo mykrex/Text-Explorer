@@ -4,6 +4,47 @@ import os
 
 app = Flask(__name__, template_folder='templates', static_folder='templates')
 
+# FUNCIÓN KMP SEARCH
+def kmp_search(pattern, text):
+    def build_lps(pattern):
+        lps = [0] * len(pattern)
+        length = 0
+        i = 1
+        
+        while i < len(pattern):
+            if pattern[i] == pattern[length]:
+                length += 1
+                lps[i] = length
+                i += 1
+            else:
+                if length != 0:
+                    length = lps[length - 1]
+                else:
+                    lps[i] = 0
+                    i += 1
+        return lps
+
+    lps = build_lps(pattern)
+    i = j = 0
+    result = []
+    
+    while i < len(text):
+        if pattern[j] == text[i]:
+            i += 1
+            j += 1
+
+        if j == len(pattern):
+            result.append(i - j)
+            j = lps[j - 1]
+
+        elif i < len(text) and pattern[j] != text[i]:
+            if j != 0:
+                j = lps[j - 1]
+            else:
+                i += 1
+
+    return result
+
 # FUNCION LCS (SIMILITUD)
 def lcs(T1, T2):
     n, m = len(T1), len(T2)
@@ -142,6 +183,42 @@ def palindromo_manacher():
         "palindromo": palindromo,
         "longitud": len(palindromo),
         "posiciones": [m.start() for m in re.finditer(re.escape(palindromo), contenido)]
+    })
+
+@app.route('/kmp_search', methods=['POST'])
+def kmp_search_route():
+    if 'archivo' not in request.files:
+        return jsonify({"error": "No file provided"})
+    
+    archivo = request.files['archivo']
+    pattern = request.form.get('pattern', '')
+    
+    if not pattern:
+        return jsonify({"error": "No pattern provided"})
+    
+    text = archivo.read().decode('utf-8')
+    indices = kmp_search(pattern, text)
+    
+    highlighted_text = text
+    offset = 0
+    for idx in indices:
+        start_pos = idx + offset
+        end_pos = start_pos + len(pattern)
+        highlight_start = '<span class="highlight-search">'
+        highlight_end = '</span>'
+        highlighted_text = (
+            highlighted_text[:start_pos] + 
+            highlight_start + 
+            highlighted_text[start_pos:end_pos] + 
+            highlight_end + 
+            highlighted_text[end_pos:]
+        )
+        offset += len(highlight_start) + len(highlight_end)
+    
+    return jsonify({
+        "indices": indices,
+        "highlighted_text": highlighted_text,
+        "total_matches": len(indices)
     })
 
 if __name__ == "__main__":

@@ -42,6 +42,16 @@ h1, h2 {
     background-color: lightblue;
 }
 
+.highlight-search {
+    background-color: #ffeb3b;
+    padding: 2px 0;
+}
+
+.current-match {
+    background-color: #ffc107;
+    border: 2px solid #ff9800;
+}
+
 button {
     padding: 10px 15px;
     margin-right: 10px;
@@ -114,4 +124,30 @@ input[type="file"] {
 #suggestions li:hover,
 #suggestions li.selected {
     background-color: #a4dfd5;
+}
+
+.search-container {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    align-items: center;
+}
+
+.search-container input {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    flex-grow: 1;
+    max-width: 300px;
+}
+
+.search-container button {
+    padding: 8px 15px;
+    margin: 0;
+}
+
+#matchCounter {
+    font-family: monospace;
+    min-width: 50px;
+    text-align: center;
 }

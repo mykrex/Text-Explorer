@@ -9,8 +9,13 @@ const kmpButton = document.getElementById('kmpButton');
 const manacherButton = document.getElementById('manacherButton');
 const autocompletarInput = document.getElementById('autocompletar_input');
 const suggestionsList = document.getElementById('suggestions');
+const searchContainer = document.querySelector('.search-container');
+
 
 let selectedFiles = [];
+let currentMatchIndex = -1;
+let totalMatches = 0;
+let matchPositions = [];
 
 fileInput.addEventListener('change', (e) => {
     selectedFiles = Array.from(e.target.files);
@@ -77,6 +82,78 @@ function highlightLCS(lcs) {
     const regex = new RegExp(lcs, 'g');
     fileContent1.innerHTML = content1.replace(regex, `<span class="highlight">${lcs}</span>`);
     fileContent2.innerHTML = content2.replace(regex, `<span class="highlight">${lcs}</span>`);
+}
+
+// KMP Search functionality
+kmpButton.addEventListener('click', () => {
+    searchContainer.style.display = 'flex';
+    const searchPattern = document.getElementById('searchPattern');
+    searchPattern.focus();
+});
+
+document.getElementById('searchPattern').addEventListener('input', async function() {
+    const pattern = this.value;
+    if (pattern.length > 0) {
+        const formData = new FormData();
+        formData.append('archivo', selectedFiles[0]);
+        formData.append('pattern', pattern);
+        
+        const response = await fetch('/kmp_search', {
+            method: 'POST',
+            body: formData
+        });
+        const data = await response.json();
+        
+        matchPositions = data.indices;
+        totalMatches = matchPositions.length;
+        currentMatchIndex = totalMatches > 0 ? 0 : -1;
+        updateMatchDisplay();
+        highlightMatches(data.highlighted_text);
+    } else {
+        fileContent1.innerHTML = fileContent1.textContent;
+        updateMatchDisplay();
+    }
+});
+
+document.getElementById('prevMatch').addEventListener('click', () => {
+    if (currentMatchIndex > 0) {
+        currentMatchIndex--;
+        updateMatchDisplay();
+        scrollToMatch();
+    }
+});
+
+document.getElementById('nextMatch').addEventListener('click', () => {
+    if (currentMatchIndex < totalMatches - 1) {
+        currentMatchIndex++;
+        updateMatchDisplay();
+        scrollToMatch();
+    }
+});
+
+function updateMatchDisplay() {
+    const counter = document.getElementById('matchCounter');
+    counter.textContent = totalMatches > 0 ? 
+        `${currentMatchIndex + 1}/${totalMatches}` : 
+        '0/0';
+}
+
+function scrollToMatch() {
+    if (currentMatchIndex >= 0 && matchPositions.length > 0) {
+        const matches = document.querySelectorAll('.highlight-search');
+        matches[currentMatchIndex].scrollIntoView({
+            behavior: 'smooth',
+            block: 'center'
+        });
+        matches.forEach((match, index) => {
+            match.classList.toggle('current-match', index === currentMatchIndex);
+        });
+    }
+}
+
+function highlightMatches(highlightedText) {
+    fileContent1.innerHTML = highlightedText;
+    scrollToMatch();
 }
 
 let currentSelection = -1;
