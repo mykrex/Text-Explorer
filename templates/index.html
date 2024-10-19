@@ -1,40 +1,40 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Text Explorer</title>
     <link rel="stylesheet" href="styles.css">
 </head>
-
 <body>
     <h1>Text Explorer</h1>
-
+    
     <div class="input-section">
         <h2>Cargar archivos</h2>
-        <input type="file" id="fileInput" multiple>
-        <button id="loadButton" disabled>Cargar</button>
+        <div class="file-input-container">
+            <input type="file" id="fileInput" multiple>
+            <span id="fileStatus">No se ha cargado/seleccionado un archivo</span>
+            <button id="loadButton" disabled>Cargar</button>
+        </div>
     </div>
-    
-    <div class="file-content-container">
+
+    <div id="fileContentsContainer" class="file-content-container" style="display: none;">
         <div id="fileContent1" class="file-content"></div>
         <div id="fileContent2" class="file-content"></div>
     </div>
 
-    <div class="input-section">
-        <h2>Similitud - LCS</h2>
-        <button id="similarityButton" disabled>Calcular similitud</button>
-        <p id="lcsResult"></p>
+    <div class="function-buttons">
+        <button id="similarityButton" disabled>Similitud - LCS</button>
+        <button id="kmpButton" disabled>Buscar - KMP</button>
+        <button id="manacherButton" disabled>Palíndromo - Manacher</button>
     </div>
 
-    <div class="input-section">
+    <div class="auto-complete-section">
         <h2>Auto-completar - Trie</h2>
-        <input type="text" id="autocompletar_input" placeholder="Escribe para auto-completar">
+        <textarea id="autocompletar_input" rows="4" placeholder="Escribe aquí para auto-completar..."></textarea>
         <ul id="suggestions"></ul>
     </div>
 
     <script src="script.js"></script>
 </body>
-
 </html>
