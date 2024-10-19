@@ -10,7 +10,7 @@ const manacherButton = document.getElementById('manacherButton');
 const autocompletarInput = document.getElementById('autocompletar_input');
 const suggestionsList = document.getElementById('suggestions');
 const searchContainer = document.querySelector('.search-container');
-
+const searchPattern = document.getElementById('searchPattern');
 
 let selectedFiles = [];
 let currentMatchIndex = -1;
@@ -59,6 +59,11 @@ loadButton.addEventListener('click', () => {
         .then(data => {
             console.log(data.message + ' ' + data.palabras_cargadas + ' palabras cargadas.');
         });
+
+        // Limpiar campos de busqueda y autocompletar
+        searchPattern.value = '';
+        autocompletarInput.value = '';
+        suggestionsList.innerHTML = '';
     }
 });
 
@@ -82,16 +87,20 @@ function highlightLCS(lcs) {
     const regex = new RegExp(lcs, 'g');
     fileContent1.innerHTML = content1.replace(regex, `<span class="highlight">${lcs}</span>`);
     fileContent2.innerHTML = content2.replace(regex, `<span class="highlight">${lcs}</span>`);
+
+    // Desplazarse a la primera ocurrencia de la subcadena común
+    const firstOccurrence = fileContent1.querySelector('.highlight');
+    if (firstOccurrence) {
+        firstOccurrence.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
 }
 
-// KMP Search functionality
 kmpButton.addEventListener('click', () => {
     searchContainer.style.display = 'flex';
-    const searchPattern = document.getElementById('searchPattern');
     searchPattern.focus();
 });
 
-document.getElementById('searchPattern').addEventListener('input', async function() {
+searchPattern.addEventListener('input', async function() {
     const pattern = this.value;
     if (pattern.length > 0) {
         const formData = new FormData();
@@ -247,4 +256,10 @@ function highlightPalindrome(palindrome, positions) {
 
     highlightedContent += content.slice(lastIndex);
     fileContent1.innerHTML = highlightedContent;
+
+    // Desplazarse al primer palindromo encontrado
+    const firstPalindrome = fileContent1.querySelector('.highlight-palindrome');
+    if (firstPalindrome) {
+        firstPalindrome.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
 }

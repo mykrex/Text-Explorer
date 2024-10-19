@@ -41,7 +41,7 @@ h1, h2 {
 .controls-section {
     margin: 20px 0;
     padding: 20px;
-    border: 1px solid #eee;
+    border: 1px solid #eeeded;
     border-radius: 10px;
     background-color: #f9f9f9;
 }
@@ -75,14 +75,8 @@ h1, h2 {
     margin: 0;
 }
 
-#matchCounter {
-    font-family: monospace;
-    min-width: 50px;
-    text-align: center;
-}
-
 .highlight {
-    background-color: lightblue;
+    background-color: rgb(150, 205, 224);
 }
 
 .highlight-search {
@@ -158,4 +152,10 @@ button:disabled {
 #suggestions li:hover,
 #suggestions li.selected {
     background-color: #a4dfd5;
+}
+
+#matchCounter {
+    font-family: monospace;
+    min-width: 50px;
+    text-align: center;
 }

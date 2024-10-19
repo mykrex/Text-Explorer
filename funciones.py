@@ -4,7 +4,7 @@ import os
 
 app = Flask(__name__, template_folder='templates', static_folder='templates')
 
-# FUNCIÓN KMP SEARCH
+# FUNCION KMP (BUSCAR)
 def kmp_search(pattern, text):
     def build_lps(pattern):
         lps = [0] * len(pattern)
@@ -63,7 +63,7 @@ def lcs(T1, T2):
 
     return T1[end_idx - max_len:end_idx]
 
-# FUNCION TRIE (AUTO - COMPLETAR)
+# FUNCION TRIE (AUTOCOMPLETAR)
 class TrieNode:
     def __init__(self):
         self.children = {}
@@ -103,7 +103,7 @@ class Trie:
 trie = Trie()
 
 
-# FUNCION MANACHER (Palindromo)
+# FUNCION MANACHER (PALINDROMO)
 def manacher(text):
     T = '#' + '#'.join(text) + '#'
     n = len(T)
