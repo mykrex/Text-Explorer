@@ -75,6 +75,11 @@ input[type="file"] {
     margin-top: 30px;
 }
 
+.highlight-palindrome {
+    background-color: #90EE90;  /* Verde claro */
+    font-weight: bold;
+}
+
 #autocompletar_input {
     width: 100%;
     padding: 10px;

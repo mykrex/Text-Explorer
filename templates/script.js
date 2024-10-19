@@ -43,7 +43,7 @@ loadButton.addEventListener('click', () => {
             similarityButton.disabled = true;
         }
 
-        // Cargar el archivo para auto-completar
+        // Cargar el archivo para autocompletar
         const formData = new FormData();
         formData.append('archivo', selectedFiles[0]);
         fetch('/cargar', {
@@ -140,4 +140,34 @@ function updateSelection() {
             suggestion.classList.remove('selected');
         }
     });
+}
+
+manacherButton.addEventListener('click', () => {
+    if (selectedFiles.length > 0) {
+        const formData = new FormData();
+        formData.append('archivo', selectedFiles[0]);
+        fetch('/manacher', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            highlightPalindrome(data.palindromo, data.posiciones);
+        });
+    }
+});
+
+function highlightPalindrome(palindrome, positions) {
+    const content = fileContent1.textContent;
+    let highlightedContent = '';
+    let lastIndex = 0;
+
+    positions.forEach(position => {
+        highlightedContent += content.slice(lastIndex, position);
+        highlightedContent += `<span class="highlight-palindrome">${palindrome}</span>`;
+        lastIndex = position + palindrome.length;
+    });
+
+    highlightedContent += content.slice(lastIndex);
+    fileContent1.innerHTML = highlightedContent;
 }
