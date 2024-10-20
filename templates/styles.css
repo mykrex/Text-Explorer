@@ -23,7 +23,7 @@ h1, h2 {
 .file-content-container {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
 }
 
 .file-content {
@@ -36,6 +36,49 @@ h1, h2 {
     white-space: pre-wrap;
     word-wrap: break-word;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.controls-section {
+    margin: 20px 0;
+    padding: 20px;
+    border: 1px solid #eee;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+}
+
+.function-buttons {
+    margin-bottom: 20px;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.search-container {
+    display: flex;
+    gap: 10px;
+    margin: 15px auto;
+    align-items: center;
+    justify-content: center;
+    max-width: 600px;
+}
+
+.search-container input {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    flex-grow: 1;
+    max-width: 300px;
+}
+
+.search-container button {
+    padding: 8px 15px;
+    margin: 0;
+}
+
+#matchCounter {
+    font-family: monospace;
+    min-width: 50px;
+    text-align: center;
 }
 
 .highlight {
@@ -52,9 +95,13 @@ h1, h2 {
     border: 2px solid #ff9800;
 }
 
+.highlight-palindrome {
+    background-color: #90EE90;
+    font-weight: bold;
+}
+
 button {
     padding: 10px 15px;
-    margin-right: 10px;
     border: none;
     border-radius: 5px;
     background-color: #4CAF50;
@@ -73,21 +120,8 @@ button:disabled {
     background-color: #cccccc;
 }
 
-input[type="file"] {
-    margin-bottom: 10px;
-}
-
-.function-buttons {
-    margin-bottom: 20px;
-}
-
 .auto-complete-section {
     margin-top: 30px;
-}
-
-.highlight-palindrome {
-    background-color: #90EE90;  /* Verde claro */
-    font-weight: bold;
 }
 
 #autocompletar_input {
@@ -124,30 +158,4 @@ input[type="file"] {
 #suggestions li:hover,
 #suggestions li.selected {
     background-color: #a4dfd5;
-}
-
-.search-container {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
-    align-items: center;
-}
-
-.search-container input {
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    flex-grow: 1;
-    max-width: 300px;
-}
-
-.search-container button {
-    padding: 8px 15px;
-    margin: 0;
-}
-
-#matchCounter {
-    font-family: monospace;
-    min-width: 50px;
-    text-align: center;
 }
