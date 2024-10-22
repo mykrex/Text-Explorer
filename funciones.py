@@ -61,6 +61,27 @@ class Trie:
 # Instancia del Trie
 trie = Trie()
 
+
+# FUNCION MANACHER (Palindromo)
+def manacher(text):
+    T = '#' + '#'.join(text) + '#'
+    n = len(T)
+    P = [0] * n
+    C = R = 0
+    for i in range(1, n-1):
+        if i < R:
+            P[i] = min(R - i, P[2*C - i])
+        while i + P[i] + 1 < n and i - P[i] - 1 >= 0 and T[i + P[i] + 1] == T[i - P[i] - 1]:
+            P[i] += 1
+        if i + P[i] > R:
+            C, R = i, i + P[i]
+    
+    max_len = max(P)
+    center = P.index(max_len)
+    start = (center - max_len) // 2
+    
+    return text[start:start+max_len]
+
 # Se manda al index.html
 @app.route('/')
 def index():
@@ -106,6 +127,22 @@ def autocompletar():
     prefix = request.args.get('prefix', '').lower()
     suggestions = trie.search(prefix)
     return jsonify([{"word": word, "frequency": freq} for word, freq in suggestions[:10]])
+
+@app.route('/manacher', methods=['POST'])
+def palindromo_manacher():
+    if 'archivo' not in request.files:
+        return jsonify({"error": "Por favor sube un archivo."})
+    
+    archivo = request.files['archivo']
+    contenido = archivo.read().decode('utf-8').lower()
+    
+    palindromo = manacher(contenido)
+    
+    return jsonify({
+        "palindromo": palindromo,
+        "longitud": len(palindromo),
+        "posiciones": [m.start() for m in re.finditer(re.escape(palindromo), contenido)]
+    })
 
 if __name__ == "__main__":
     app.run(debug=True)
